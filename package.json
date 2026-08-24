@@ -1,0 +1,12 @@
+{
+  "name": "newgarden-talento-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Backend Vercel para el formulario de candidatura espontanea (Trabaja con nosotros) del tema de Shopify de Newgarden.",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "busboy": "^1.6.0"
+  }
+}
