@@ -229,6 +229,14 @@ module.exports = async function handler(req, res) {
   const email = String(fields.email || '').trim();
   const message = String(fields.message || '').trim();
   const acceptPrivacy = String(fields.accept_privacy || '').toLowerCase();
+  /*
+   * Presente solo cuando el formulario está embebido en la página de una
+   * convocatoria específica (ver settings.job_title en
+   * sections/job-application-form.liquid del tema). Vacío = candidatura
+   * espontánea, que sigue funcionando igual que antes.
+   */
+  const jobTitle = String(fields.job_title || '').trim();
+  const isFixedApplication = jobTitle !== '';
 
   if (isVisiblyEmpty(name)) {
     sendJson(res, 422, { ok: false, message: 'El nombre es obligatorio.', field: 'name' });
@@ -237,6 +245,11 @@ module.exports = async function handler(req, res) {
 
   if (name.length > 150) {
     sendJson(res, 422, { ok: false, message: 'El nombre no puede superar los 150 caracteres.', field: 'name' });
+    return;
+  }
+
+  if (jobTitle.length > 150) {
+    sendJson(res, 422, { ok: false, message: 'El nombre de la oferta no puede superar los 150 caracteres.', field: 'job_title' });
     return;
   }
 
@@ -292,8 +305,11 @@ module.exports = async function handler(req, res) {
       from: mailFrom,
       to: mailTo,
       replyTo: email,
-      subject: `Formulario de trabajo de ${name}, ${email}`,
+      subject: isFixedApplication
+        ? `Candidatura a "${jobTitle}" de ${name}, ${email}`
+        : `Formulario de trabajo de ${name}, ${email}`,
       text: [
+        ...(isFixedApplication ? [`Oferta: ${jobTitle}`, ''] : []),
         `Nombre: ${name}`,
         `Email: ${email}`,
         '',
@@ -325,7 +341,9 @@ module.exports = async function handler(req, res) {
       text: [
         '¡Hola!',
         '',
-        'Te confirmamos que hemos recibido tu currículum vitae.',
+        isFixedApplication
+          ? `Te confirmamos que hemos recibido tu candidatura para la oferta "${jobTitle}".`
+          : 'Te confirmamos que hemos recibido tu currículum vitae.',
         '',
         'Los datos facilitados a través de esta solicitud de empleo serán tratados por NEWGARDEN SPAIN, S.L. Estos datos han sido facilitados por el interesado con la única finalidad de participar en los procesos de selección de personal realizados por NEWGARDEN SPAIN, S.L. y no serán cedidos a terceros salvo consentimiento del interesado.',
         '',

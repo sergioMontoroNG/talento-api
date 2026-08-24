@@ -18,6 +18,12 @@ correo saliente, sin pasar por ningún almacenamiento propio ni de terceros.
 - `message` (texto, opcional)
 - `accept_privacy` (`on`/`1`/`true`, obligatorio)
 - `cv` (archivo `.pdf`/`.doc`/`.docx`, obligatorio)
+- `job_title` (texto, opcional) — nombre de la oferta/convocatoria. Si se envía,
+  el formulario se trata como una candidatura a una vacante concreta en vez de
+  espontánea: se destaca en el asunto del email interno y en el cuerpo de los
+  emails a RRHH y al candidato. Lo rellena el tema de Shopify a partir del
+  ajuste "Nombre de la oferta / vacante" de la sección `job-application-form`
+  cuando se usa en la página de una convocatoria específica.
 
 Responde JSON `{ ok: true/false, message, field? }`.
 
