@@ -338,6 +338,7 @@ module.exports = async function handler(req, res) {
       ].join('\n'),
     });
   } catch (err) {
+    console.error('Error enviando el formulario de candidatura:', err);
     sendJson(res, 502, { ok: false, message: 'No ha sido posible enviar el formulario. Inténtalo más tarde.' });
     return;
   }
